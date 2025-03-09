@@ -1,9 +1,12 @@
-import { useState } from 'react';
 import { TextField, Button, Box, Typography, Link } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useCreateAsset } from '../hooks';
+import { toast } from 'sonner';
+import { AssetOperation, AssetType, CreateAssetReq } from '../types/assets';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email format'),
@@ -12,6 +15,15 @@ const loginSchema = z.object({
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setUserData } = useAuth();
+
+  const handleSuccess = (submitId: string, otp?: string) => {
+    toast.success(`OTP is ${otp}`, { duration: 10000 });
+    navigate('/verify-otp', { state: { submitId, from: 'login' } });
+  };
+
+  const { mutate, isPending } = useCreateAsset(handleSuccess);
+
   const {
     control,
     handleSubmit,
@@ -19,18 +31,15 @@ const Login = () => {
   } = useForm({
     resolver: zodResolver(loginSchema)
   });
-  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: any) => {
-    setLoading(true);
-    try {
-      console.log('Logging in with', data);
-      navigate('/dashboard');
-    } catch (error) {
-      console.error('Login error', error);
-    } finally {
-      setLoading(false);
-    }
+    setUserData({ email: data.email, password: data.password });
+
+    const payload: CreateAssetReq = {
+      type: AssetType.Email,
+      data: { email: data.email, operation: AssetOperation.Login }
+    };
+    mutate(payload);
   };
 
   return (
@@ -70,8 +79,8 @@ const Login = () => {
               />
             )}
           />
-          <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
+          <Button type="submit" variant="contained" color="primary" fullWidth disabled={isPending}>
+            {isPending ? 'Logging in...' : 'Login'}
           </Button>
           <Typography variant="body2">
             Don't have an account?{' '}

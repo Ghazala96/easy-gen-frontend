@@ -3,9 +3,10 @@ import { toast } from 'sonner';
 
 import { ErrorRes } from './types/common';
 import { useMutation } from '@tanstack/react-query';
-import { createAsset, register, verifyAsset } from './services';
+import { createAsset, login, register, verifyAsset } from './services';
 import { VerifyAssetRes } from './types/assets';
 import { UserData } from './context/AuthContext';
+import { LoginRes, RegisterRes } from './types/auth';
 
 export const useErrorHandler = () => {
   return (err: Error) => {
@@ -54,12 +55,25 @@ export const useVerifyAsset = (
   });
 };
 
-export const useRegister = (callback: () => void) => {
+export const useRegister = (callback: (data: RegisterRes) => void) => {
   const errorHandler = useErrorHandler();
   return useMutation({
     mutationFn: register,
-    onSuccess: () => {
-      callback();
+    onSuccess: (data) => {
+      callback(data);
+    },
+    onError: (err) => {
+      errorHandler(err);
+    }
+  });
+};
+
+export const useLogin = (callback: (data: LoginRes) => void) => {
+  const errorHandler = useErrorHandler();
+  return useMutation({
+    mutationFn: login,
+    onSuccess: (data) => {
+      callback(data);
     },
     onError: (err) => {
       errorHandler(err);

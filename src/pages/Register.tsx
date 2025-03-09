@@ -28,7 +28,7 @@ const Register = () => {
 
   const handleSuccess = (submitId: string, otp?: string) => {
     toast.success(`OTP is ${otp}`, { duration: 10000 });
-    navigate('/verify-otp', { state: { submitId, otp, from: 'register' } });
+    navigate('/verify-otp', { state: { submitId, from: 'register' } });
   };
 
   const { mutate, isPending } = useCreateAsset(handleSuccess);

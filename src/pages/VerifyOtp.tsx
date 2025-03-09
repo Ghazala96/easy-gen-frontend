@@ -2,16 +2,17 @@ import { useState } from 'react';
 import { TextField, Button, Box, Typography } from '@mui/material';
 // import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useVerifyAsset, useRegister } from '../hooks';
+import { useLogin, useVerifyAsset, useRegister } from '../hooks';
 import { useAuth, UserData } from '../context/AuthContext';
 import { toast } from 'sonner';
 import { VerifyAssetRes } from '../types/assets';
+import { LoginRes, RegisterRes } from '../types/auth';
 
 const VerifyOtp = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { submitId, from } = location.state || {};
-  const { userData } = useAuth();
+  const { userData, setUserData, setJwtTokens } = useAuth();
 
   const handleVerifyAssetSuccess = (data: VerifyAssetRes, userData: UserData) => {
     const claimId = data.claimId;
@@ -19,24 +20,37 @@ const VerifyOtp = () => {
     if (from === 'register') {
       const registerPayload = {
         claimIds: [claimId],
-        name: userData.name,
+        name: userData!.name!,
         password: userData.password
       };
       register(registerPayload);
+    } else if (from === 'login') {
+      const loginPayload = {
+        claimIds: [claimId],
+        password: userData!.password
+      };
+      login(loginPayload);
     }
   };
 
-  const handleRegisterSuccess = () => {
+  const handleAuthSuccess = (data: RegisterRes | LoginRes) => {
+    setUserData(null);
+    setJwtTokens({
+      accessToken: data.accessToken,
+      refreshToken: data.refreshToken
+    });
+    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('refreshToken', data.refreshToken);
     navigate('/dashboard');
   };
 
-  const { mutate: register, isPending: registering } = useRegister(handleRegisterSuccess);
+  const { mutate: register, isPending: registering } = useRegister(handleAuthSuccess);
+  const { mutate: login, isPending: loggingIn } = useLogin(handleAuthSuccess);
   const { mutate: verifyAsset, isPending: verifying } = useVerifyAsset(
     handleVerifyAssetSuccess,
     userData!
   );
 
-  // const { mutate: login, isPending: loggingIn } = useLogin();
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
 
   const handleChange = (index: number, value: string) => {
@@ -98,10 +112,16 @@ const VerifyOtp = () => {
           variant="contained"
           color="primary"
           fullWidth
-          disabled={verifying || registering}
+          disabled={verifying || registering || loggingIn}
           sx={{ mt: 2 }}
         >
-          {verifying ? 'Verifying...' : registering ? 'Registering...' : 'Verify'}
+          {verifying
+            ? 'Verifying...'
+            : registering
+              ? 'Registering...'
+              : loggingIn
+                ? 'Logging in...'
+                : 'Verify'}
         </Button>
       </form>
     </Box>
