@@ -34,14 +34,3 @@ export interface LoginRes {
   accessToken: string;
   refreshToken: string;
 }
-
-export interface getMyProfileRes {
-  _id: string;
-  email: string;
-  name: {
-    first: string;
-    last: string;
-  };
-  role: string;
-  createdAt: string;
-}

@@ -1,13 +1,13 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { TextField, Button, Box, Typography, Link } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { z } from 'zod';
 
 import { useAuth } from '../context/AuthContext';
-import { useCreateAsset } from '../hooks';
-import { AssetOperation, AssetType, CreateAssetReq } from '../types/assets';
-import { toast } from 'sonner';
+import { useCreateAsset } from '../hooks/useAsset';
+import { AssetOperation, AssetType, CreateAssetReq } from '../types/asset';
 
 const registerSchema = z.object({
   firstName: z.string().min(3, 'First name must be at least 3 characters'),

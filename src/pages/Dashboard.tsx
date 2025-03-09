@@ -1,12 +1,14 @@
 import { Box, Typography, Button, CircularProgress } from '@mui/material';
-import { useAuth } from '../context/AuthContext';
-import { useLogout, useProfile } from '../hooks';
 import { useNavigate } from 'react-router-dom';
+
+import { useAuth } from '../context/AuthContext';
+import { useLogout } from '../hooks/useAuth';
+import { useUserProfile } from '../hooks/useUser';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { jwtTokens, setJwtTokens, setUserData } = useAuth();
-  const { data: user, isLoading, error } = useProfile();
+  const { data: user, isLoading, error } = useUserProfile();
 
   const handleLogoutSuccess = () => {
     navigate('/login');

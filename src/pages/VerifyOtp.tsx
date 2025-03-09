@@ -1,11 +1,12 @@
-import { useState } from 'react';
 import { TextField, Button, Box, Typography } from '@mui/material';
-// import { useForm } from "react-hook-form";
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useLogin, useVerifyAsset, useRegister } from '../hooks';
-import { useAuth, UserData } from '../context/AuthContext';
 import { toast } from 'sonner';
-import { VerifyAssetRes } from '../types/assets';
+
+import { useAuth, UserData } from '../context/AuthContext';
+import { useVerifyAsset } from '../hooks/useAsset';
+import { useLogin, useRegister } from '../hooks/useAuth';
+import { VerifyAssetRes } from '../types/asset';
 import { LoginRes, RegisterRes } from '../types/auth';
 
 const VerifyOtp = () => {

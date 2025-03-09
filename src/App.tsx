@@ -10,14 +10,12 @@ function App() {
     <Router>
       <CssBaseline />
       <Container maxWidth="xs">
-        {' '}
-        {/* Smaller container for a minimal design */}
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/" element={<Navigate to="/login" />} /> {/* Default to login */}
+          <Route path="/" element={<Navigate to="/login" />} />
         </Routes>
       </Container>
     </Router>
