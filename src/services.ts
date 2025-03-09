@@ -26,3 +26,14 @@ export const login = async (data: LoginReq): Promise<LoginRes> => {
   const res = await axiosInstance.post(url, data);
   return res.data;
 };
+
+export const logout = async (accessToken: string) => {
+  const url = 'auth/logout';
+  await axiosInstance.post(url, {}, { headers: { Authorization: `Bearer ${accessToken}` } });
+};
+
+export const getProfile = async (accessToken: string) => {
+  const url = 'users/me';
+  const res = await axiosInstance.get(url, { headers: { Authorization: `Bearer ${accessToken}` } });
+  return res.data;
+};

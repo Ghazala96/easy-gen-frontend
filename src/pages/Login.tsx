@@ -13,6 +13,8 @@ const loginSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters')
 });
 
+type LoginSchema = z.infer<typeof loginSchema>;
+
 const Login = () => {
   const navigate = useNavigate();
   const { setUserData } = useAuth();
@@ -32,7 +34,7 @@ const Login = () => {
     resolver: zodResolver(loginSchema)
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: LoginSchema) => {
     setUserData({ email: data.email, password: data.password });
 
     const payload: CreateAssetReq = {

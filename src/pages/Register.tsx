@@ -22,6 +22,8 @@ const registerSchema = z.object({
     .regex(/[^a-zA-Z0-9]/, 'Must contain at least one special character')
 });
 
+type RegisterSchema = z.infer<typeof registerSchema>;
+
 const Register = () => {
   const navigate = useNavigate();
   const { setUserData } = useAuth();
@@ -41,7 +43,7 @@ const Register = () => {
     resolver: zodResolver(registerSchema)
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: RegisterSchema) => {
     setUserData({
       name: {
         first: data.firstName,

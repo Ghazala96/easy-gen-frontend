@@ -15,8 +15,7 @@ interface AuthContextType {
   userData: UserData | null;
   setUserData: (data: UserData | null) => void;
   jwtTokens: JwtTokens | null;
-  setJwtTokens: (jwtTokens: JwtTokens) => void;
-  logout: () => void;
+  setJwtTokens: (jwtTokens: JwtTokens | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,15 +24,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [jwtTokens, setJwtTokens] = useState<JwtTokens | null>(null);
 
-  const logout = () => {
-    setJwtTokens(null);
-    setUserData(null);
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-  };
-
   return (
-    <AuthContext.Provider value={{ userData, setUserData, jwtTokens, setJwtTokens, logout }}>
+    <AuthContext.Provider value={{ userData, setUserData, jwtTokens, setJwtTokens }}>
       {children}
     </AuthContext.Provider>
   );

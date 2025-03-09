@@ -2,10 +2,10 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { toast } from 'sonner';
 
 import { ErrorRes } from './types/common';
-import { useMutation } from '@tanstack/react-query';
-import { createAsset, login, register, verifyAsset } from './services';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { createAsset, getProfile, login, logout, register, verifyAsset } from './services';
 import { VerifyAssetRes } from './types/assets';
-import { UserData } from './context/AuthContext';
+import { useAuth, UserData } from './context/AuthContext';
 import { LoginRes, RegisterRes } from './types/auth';
 
 export const useErrorHandler = () => {
@@ -78,5 +78,27 @@ export const useLogin = (callback: (data: LoginRes) => void) => {
     onError: (err) => {
       errorHandler(err);
     }
+  });
+};
+
+export const useLogout = (callback: () => void) => {
+  const errorHandler = useErrorHandler();
+  return useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      callback();
+    },
+    onError: (err) => {
+      errorHandler(err);
+    }
+  });
+};
+
+export const useProfile = () => {
+  const { jwtTokens } = useAuth();
+  return useQuery({
+    queryKey: ['user'],
+    queryFn: () => getProfile(jwtTokens!.accessToken),
+    retry: 1
   });
 };
