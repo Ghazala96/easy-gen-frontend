@@ -16,8 +16,6 @@ const Dashboard = () => {
   const { mutate } = useLogout(handleLogoutSuccess);
 
   const onClick = async () => {
-    console.log('in onClick');
-    console.log(jwtTokens);
     mutate(jwtTokens!.accessToken);
 
     setJwtTokens(null);
